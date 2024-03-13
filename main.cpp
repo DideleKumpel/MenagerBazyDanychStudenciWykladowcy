@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <iomanip>
+#include <limits>
 
 #include "Tstudent.h"
 #include "Twykladowca.h"
@@ -37,9 +38,10 @@ template <typename typ>
 void SortujLiczby(vector<typ> &BazaDanych, char zmienna, bool kolejnosc);
 template <typename typ>
 void SortujString(vector<typ> &BazaDanych, char zmienna, bool kolejnosc);
+void OblsugaBleduCin();
 
 struct BrakPliku{};
-struct KoniecPliku{};
+struct BladCin{};
 
 int main() {
     vector<string> NazwyBazDanych;
@@ -69,13 +71,31 @@ int main() {
     }
     while(true) {
         int menu1;
-        cout << "Wpisz cyfre odpowiadjaca numerowi opcji." << endl;
-        cout << "1. Stworz nowa baze danych" << endl;
-        if (CzyWczytany) {
-            cout << "2. Wczytaj isniejaca baze" << endl;
+        while(true) {
+            system("CLS");
+            cout << "Wpisz cyfre odpowiadjaca numerowi opcji." << endl;
+            cout << "1. Stworz nowa baze danych" << endl;
+            if (CzyWczytany) {
+                cout << "2. Wczytaj isniejaca baze" << endl;
+            }
+            cout << "3. Zamnkij program" << endl;
+            cin >> menu1;
+            try {
+                OblsugaBleduCin();
+            }
+            catch (BladCin)
+            {
+                continue;
+            }
+            if(menu1<1 or menu1>3)
+            {
+                cout<<"Wprowadzono liczbe z poza zakres. Wprowadz ponownie"<<endl;
+                system("pause");
+                system("CLS");
+                continue;
+            }
+            break;
         }
-        cout << "3. Zamnkij program" << endl;
-        cin >> menu1;
         ofstream dane;
         system("CLS");
         switch (menu1) {
@@ -87,18 +107,35 @@ int main() {
                 dane.close();
                 break;
             case 2:
-                cout << "Wczytane bazy:" << endl;
-                for (int i = 0; i < NazwyBazDanych.size(); i++) {
-                    cout << i + 1 << ". " << NazwyBazDanych[i] << " ";
-                    if (!((i + 1) % 10) and i != 0)
-                        cout << endl;
-                    if (i == NazwyBazDanych.size() - 1)
-                        cout << endl;
+                while(true) {
+                    cout << "Wczytane bazy:" << endl;
+                    for (int i = 0; i < NazwyBazDanych.size(); i++) {
+                        cout << i + 1 << ". " << NazwyBazDanych[i] << " ";
+                        if (!((i + 1) % 10) and i != 0)
+                            cout << endl;
+                        if (i == NazwyBazDanych.size() - 1)
+                            cout << endl;
+                    }
+                    cout << "Podaj numer bazy do wczytania" << endl;
+                    int numer;
+                    cin >> numer;
+                    try {
+                        OblsugaBleduCin();
+                    }
+                    catch (BladCin)
+                    {
+                        continue;
+                    }
+                    if(numer<1 or numer>NazwyBazDanych.size())
+                    {
+                        cout<<"Wprowadzono liczbe z poza zakres. Wprowadz ponownie"<<endl;
+                        system("pause");
+                        system("CLS");
+                        continue;
+                    }
+                    nazwaBazy = NazwyBazDanych[numer - 1];
+                    break;
                 }
-                cout << "Podaj numer bazy do wczytania" << endl;
-                int numer;
-                cin >> numer;
-                nazwaBazy = NazwyBazDanych[numer - 1];
                 break;
             case 3:
                 return 0;
@@ -108,8 +145,24 @@ int main() {
         WczytajBaze(wykladowcy, nazwaBazy);
         while (true) {
             int odpowiedz;
-            cout << "1. Pracuj na spisie studnetow \n2. Pracuj na spisie wykladowcow \n3. Zamknij program" << endl<< endl;
-            cin >> odpowiedz;
+            while(true) {
+                cout << "1. Pracuj na spisie studnetow \n2. Pracuj na spisie wykladowcow \n3. Zamknij program" << endl
+                     << endl;
+                cin >> odpowiedz;
+                try {
+                    OblsugaBleduCin();
+                }
+                catch (BladCin) {
+                    continue;
+                }
+                if (odpowiedz < 1 or odpowiedz > 3) {
+                    cout << "Wprowadzono liczbe z poza zakres. Wprowadz ponownie" << endl;
+                    system("pause");
+                    system("CLS");
+                    continue;
+                }
+                break;
+            }
             system("CLS");
             switch (odpowiedz) {
                 case 1:
@@ -137,6 +190,18 @@ void menu2(vector<typ> &BazaDanych, const string NazwaPliku)
                "Szukaj danych\n6. Sortuj\n7. Wyczysc ekran\n8. Wroc do wyboru bazy danych"
                 << endl;
         cin >> odpowiedz;
+        try {
+            OblsugaBleduCin();
+        }
+        catch (BladCin) {
+            continue;
+        }
+        if (odpowiedz < 1 or odpowiedz > 3) {
+            cout << "Wprowadzono liczbe z poza zakres. Wprowadz ponownie" << endl;
+            system("pause");
+            system("CLS");
+            continue;
+        }
         switch (odpowiedz) {
             case 1:
                 WypiszBaze(BazaDanych);
@@ -650,14 +715,61 @@ template<typename typ>
 void Sortuj(vector<typ> BazaDanych) {
     int NazwaDanej, sposob;
     while (true){
-    if (typeid(typ) == typeid(Twykladowca))
-        cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.TYTUL 5.WYDZIAL" << endl;
-    else if (typeid(typ) == typeid(Tstudent))
-        cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.KIERUNEK 5.GRUPA W 6.GRUPA C 7.GRUPA L" << endl;
-    cout << "Podaj liczbe odpowiadjaca numerowi danej wedlug ktorej ma odbyc sie sortowanie"<<endl;
-    cin >> NazwaDanej;
-    cout<<"Podaj sposob sortowania: 1.ROSNACO 2.MALEJACO"<<endl;
-    cin >> sposob;
+        while (true) {
+            if (typeid(typ) == typeid(Twykladowca))
+                cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.TYTUL 5.WYDZIAL" << endl;
+            else if (typeid(typ) == typeid(Tstudent))
+                cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.KIERUNEK 5.GRUPA W 6.GRUPA C 7.GRUPA L" << endl;
+            cout << "Podaj liczbe odpowiadjaca numerowi danej wedlug ktorej ma odbyc sie sortowanie" << endl;
+            cin >> NazwaDanej;
+            try {
+                OblsugaBleduCin();
+            }
+            catch (BladCin)
+            {
+                continue;
+            }
+            if (typeid(typ) == typeid(Twykladowca)) {
+                if(NazwaDanej>5 or NazwaDanej<1)
+                {
+                    cout<<"Wpisano liczbe z poza zakresu. Prowac dane ponownie"<<endl;
+                    system("pause");
+                    system("CLS");
+                    continue;
+                }
+            } else if (typeid(typ) == typeid(Tstudent)) {
+                if(NazwaDanej>7 or NazwaDanej<0)
+                {
+                    cout<<"Wpisano liczbe z poza zakresu. Prowac dane ponownie"<<endl;
+                    system("pause");
+                    system("CLS");
+                    continue;
+                }
+            }
+            break;
+        }
+        while(true) {
+            cout << "Podaj sposob sortowania: 1.ROSNACO 2.MALEJACO" << endl;
+            cin >> sposob;
+            if(cin.fail())
+            {
+                cout<<"Nalezy pisac liczbe. Prowadz dane ponownie"<<endl;
+                system("pause");
+                system("CLS");
+                cin.clear();
+                cin.ignore();
+                cin.ignore( std::numeric_limits < std::streamsize >::max(), '\n' );
+                continue;
+            }
+            if(sposob>2 or sposob<1)
+            {
+                cout<<"Wpisano liczbe z poza zakresu. Wprowac dane ponownie"<<endl;
+                system("pause");
+                system("CLS");
+                continue;
+            }
+            break;
+        }
     bool koljenosc;
     if(sposob==1)
         koljenosc=1;
@@ -798,5 +910,20 @@ void SortujString(vector<typ> &BazaDanych, char zmienna, bool kolejnosc)
                 }
             }
         }
+    }
+}
+
+void OblsugaBleduCin()
+{
+    if(cin.fail())
+    {
+        cout<<"Nalezy pisac liczbe. Prowadz dane ponownie"<<endl;
+        system("pause");
+        system("CLS");
+        cin.clear();
+        cin.ignore();
+        cin.ignore( std::numeric_limits < std::streamsize >::max(), '\n' );
+        BladCin flaga;
+        throw flaga;
     }
 }
