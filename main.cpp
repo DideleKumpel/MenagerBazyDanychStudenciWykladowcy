@@ -34,9 +34,9 @@ void Edytuj(vector<typ> &BazaDanych, const string NazwaPliku);
 template<typename typ>
 void Sortuj(vector<typ> BazaDanych);
 template <typename typ>
-void SortujLiczby(vector<typ> &BazaDanych, char zmienna);
+void SortujLiczby(vector<typ> &BazaDanych, char zmienna, bool kolejnosc);
 template <typename typ>
-void SortujString(vector<typ> &BazaDanych, char zmienna);
+void SortujString(vector<typ> &BazaDanych, char zmienna, bool kolejnosc);
 
 struct BrakPliku{};
 struct KoniecPliku{};
@@ -648,135 +648,153 @@ void Edytuj(vector<typ> &BazaDanych, const string NazwaPliku) {
 
 template<typename typ>
 void Sortuj(vector<typ> BazaDanych) {
-    string NazwaDanej;
+    int NazwaDanej, sposob;
     while (true){
     if (typeid(typ) == typeid(Twykladowca))
-        cout << "Nazwy danych: imie, nazwisko, pesel tytul, wydzial" << endl;
+        cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.TYTUL 5.WYDZIAL" << endl;
     else if (typeid(typ) == typeid(Tstudent))
-        cout << "Nazwy danych: imie, nazwisko, pesel, kierunek, grupaW, grupaC, grupaL" << endl;
-    cout << "Wedlug ktorej danej wyswietlic posortowanej-";
+        cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.KIERUNEK 5.GRUPA W 6.GRUPA C 7.GRUPA L" << endl;
+    cout << "Podaj liczbe odpowiadjaca numerowi danej wedlug ktorej ma odbyc sie sortowanie"<<endl;
     cin >> NazwaDanej;
-    if (NazwaDanej == "imie") {
-        cout << endl;
-        SortujString(BazaDanych, 'i');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
+    cout<<"Podaj sposob sortowania: 1.ROSNACO 2.MALEJACO"<<endl;
+    cin >> sposob;
+    bool koljenosc;
+    if(sposob==1)
+        koljenosc=1;
+    else
+        koljenosc=0;
+    cout << "Posortowane: " << endl;
+        switch (NazwaDanej) {
+            case 1:
+                SortujString(BazaDanych, 'i', koljenosc);
+                WypiszBaze(BazaDanych);
+                break;
+            case 2:
+                SortujString(BazaDanych, 'n', koljenosc);
+                WypiszBaze(BazaDanych);
+                break;
+            case 3:
+                SortujLiczby(BazaDanych, 'p', koljenosc);
+                WypiszBaze(BazaDanych);
+                break;
+            case 4:
+                if (typeid(typ) == typeid(Twykladowca)) {
+                    SortujString(BazaDanych, 't', koljenosc);
+                    WypiszBaze(BazaDanych);
+                } else if (typeid(typ) == typeid(Tstudent)) {
+                    SortujString(BazaDanych, 'k', koljenosc);
+                    WypiszBaze(BazaDanych);
+                }
+                break;
+            case 5:
+                if (typeid(typ) == typeid(Twykladowca)) {
+                    SortujString(BazaDanych, 'w', koljenosc);
+                    WypiszBaze(BazaDanych);
+                } else if (typeid(typ) == typeid(Tstudent)) {
+                    SortujLiczby(BazaDanych, 'w', koljenosc);
+                    WypiszBaze(BazaDanych);
+                }
+                break;
+            case 6:
+                SortujLiczby(BazaDanych, 'c', koljenosc);
+                WypiszBaze(BazaDanych);
+                break;
+            case 7:
+                SortujLiczby(BazaDanych, 'l', koljenosc);
+                WypiszBaze(BazaDanych);
+                break;
+            default:
+                cout << "Zle podana dana" << endl;
+                system("pause");
+                continue;
+        }
+        break;
+        }
         system("pause");
-        return;
-    } else if (NazwaDanej == "nazwisko") {
-        cout << endl;
-        SortujString(BazaDanych, 'n');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else if (NazwaDanej == "tytul") {
-        cout << endl;
-        SortujString(BazaDanych, 't');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else if (NazwaDanej == "wydzial") {
-        cout << endl;
-        SortujString(BazaDanych, 'w');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else if (NazwaDanej == "kierunek") {
-        cout << endl;
-        SortujString(BazaDanych, 'k');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else if (NazwaDanej == "pesel") {
-        cout << endl;
-        SortujLiczby(BazaDanych, 'p');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else if (NazwaDanej == "grupaW") {
-        cout << endl;
-        SortujLiczby(BazaDanych, 'w');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else if (NazwaDanej == "grupaC") {
-        cout << endl;
-        SortujLiczby(BazaDanych, 'c');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else if (NazwaDanej == "grupaL") {
-        cout << endl;
-        SortujLiczby(BazaDanych, 'l');
-        cout << "Posortowane: " << endl;
-        WypiszBaze(BazaDanych);
-        system("pause");
-        return;
-    } else {
-        cout << "Zle podana dana" << endl;
-        system("pause");
-    }
-    }
 }
 
 template <typename typ>
-void SortujLiczby(vector<typ> &BazaDanych, char zmienna)
+void SortujLiczby(vector<typ> &BazaDanych, char zmienna, bool kolejnosc)
 {
     typ pomocna;
-    for(int i=0; i < BazaDanych.size(); i++)
-    {
-        for(int j=i; j < BazaDanych.size(); j++)
-        {
-            if(BazaDanych[i].PodajN(zmienna)>BazaDanych[j].PodajN(zmienna))
-            {
-                pomocna=BazaDanych[i];
-                BazaDanych[i]=BazaDanych[j];
-                BazaDanych[j]=pomocna;
-                i=0;
+    if(kolejnosc) {
+        for (int i = 0; i < BazaDanych.size(); i++) {
+            for (int j = i; j < BazaDanych.size(); j++) {
+                if (BazaDanych[i].PodajN(zmienna) > BazaDanych[j].PodajN(zmienna)) {
+                    pomocna = BazaDanych[i];
+                    BazaDanych[i] = BazaDanych[j];
+                    BazaDanych[j] = pomocna;
+                    i = 0;
 
+                }
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < BazaDanych.size(); i++) {
+            for (int j = i; j < BazaDanych.size(); j++) {
+                if (BazaDanych[i].PodajN(zmienna) < BazaDanych[j].PodajN(zmienna)) {
+                    pomocna = BazaDanych[i];
+                    BazaDanych[i] = BazaDanych[j];
+                    BazaDanych[j] = pomocna;
+                    i = 0;
+
+                }
             }
         }
     }
 }
 
 template <typename typ>
-void SortujString(vector<typ> &BazaDanych, char zmienna)
+void SortujString(vector<typ> &BazaDanych, char zmienna, bool kolejnosc)
 {
     typ pomocnaT;
     string pomocnicza1, pomocnicza2;
     int dlugosc1=0, dlugosc2=0;
-    for(int i=0; i < BazaDanych.size(); i++)
-    {
-        for(int j=i; j < BazaDanych.size(); j++)
-        {
-            dlugosc1=(BazaDanych[i].PodajS(zmienna)).length();
-            dlugosc2=(BazaDanych[j].PodajS(zmienna)).length();
-            if(dlugosc1<dlugosc2)
-                dlugosc1=dlugosc2;
-            for(int k=0; k<dlugosc1; k++)
-            {
-                if((BazaDanych[i].PodajS(zmienna))[k]==(BazaDanych[j].PodajS(zmienna))[k])
-                {
-                    continue;
+    if(kolejnosc) {
+        for (int i = 0; i < BazaDanych.size(); i++) {
+            for (int j = i; j < BazaDanych.size(); j++) {
+                dlugosc1 = (BazaDanych[i].PodajS(zmienna)).length();
+                dlugosc2 = (BazaDanych[j].PodajS(zmienna)).length();
+                if (dlugosc1 < dlugosc2)
+                    dlugosc1 = dlugosc2;
+                for (int k = 0; k < dlugosc1; k++) {
+                    if ((BazaDanych[i].PodajS(zmienna))[k] == (BazaDanych[j].PodajS(zmienna))[k]) {
+                        continue;
+                    } else if ((BazaDanych[i].PodajS(zmienna))[k] < (BazaDanych[j].PodajS(zmienna))[k]) {
+                        break;
+                    }
+                    if ((BazaDanych[i].PodajS(zmienna))[k] > (BazaDanych[j].PodajS(zmienna))[k]) {
+                        pomocnaT = BazaDanych[i];
+                        BazaDanych[i] = BazaDanych[j];
+                        BazaDanych[j] = pomocnaT;
+                        i = 0;
+                        break;
+                    }
                 }
-                else if((BazaDanych[i].PodajS(zmienna))[k]<(BazaDanych[j].PodajS(zmienna))[k])
-                {
-                    break;
-                }
-                if((BazaDanych[i].PodajS(zmienna))[k]>(BazaDanych[j].PodajS(zmienna))[k])
-                {
-                    pomocnaT=BazaDanych[i];
-                    BazaDanych[i]=BazaDanych[j];
-                    BazaDanych[j]=pomocnaT;
-                    i=0;
-                    break;
+            }
+        }
+    }else{
+        for (int i = 0; i < BazaDanych.size(); i++) {
+            for (int j = i; j < BazaDanych.size(); j++) {
+                dlugosc1 = (BazaDanych[i].PodajS(zmienna)).length();
+                dlugosc2 = (BazaDanych[j].PodajS(zmienna)).length();
+                if (dlugosc1 < dlugosc2)
+                    dlugosc1 = dlugosc2;
+                for (int k = 0; k < dlugosc1; k++) {
+                    if ((BazaDanych[i].PodajS(zmienna))[k] == (BazaDanych[j].PodajS(zmienna))[k]) {
+                        continue;
+                    } else if ((BazaDanych[i].PodajS(zmienna))[k] > (BazaDanych[j].PodajS(zmienna))[k]) {
+                        break;
+                    }
+                    if ((BazaDanych[i].PodajS(zmienna))[k] < (BazaDanych[j].PodajS(zmienna))[k]) {
+                        pomocnaT = BazaDanych[i];
+                        BazaDanych[i] = BazaDanych[j];
+                        BazaDanych[j] = pomocnaT;
+                        i = 0;
+                        break;
+                    }
                 }
             }
         }
