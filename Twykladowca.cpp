@@ -94,6 +94,8 @@ std::string Twykladowca::PodajS(char co) {
 
 long long int Twykladowca::PodajN(char co) {
     switch (co) {
+        case 'I':
+            return Pid;
         case 'i':
             return id;
         case 'p':

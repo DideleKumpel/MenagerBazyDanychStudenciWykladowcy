@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <cstdlib>
+#include <iomanip>
 
 #include "Tstudent.h"
 #include "Twykladowca.h"
@@ -20,6 +21,8 @@ template<typename typ>
 void ZapiszBaze(vector<typ> &BazaDanych, string NazwaPliku);
 template<typename typ>
 void WypiszBaze(vector<typ> &BazaDanych);
+template<typename typ>
+void WypiszBazeW(vector<typ> &BazaDanych);
 template<typename typ>
 void DodajWpis(vector<typ> &BazaDanych,const string NazwaPliku);
 template<typename typ>
@@ -267,18 +270,152 @@ void ZapiszBaze(vector<typ> &BazaDanych, const  string NazwaPliku)
 template<typename typ>
 void WypiszBaze(vector<typ> &BazaDanych)
 {
+    bool poprawnaK=1;
+    vector<int> listaKomend;
+    while(poprawnaK) {
+        cout << "Ktore dane wypisac: " << endl;
+        if (typeid(typ) == typeid(Twykladowca)) {
+            cout << "1.ID  2.IMIE  3.NAZWISKO  4.PESEL  5.TYTUL  6.E-MAIL  7.WYDZIAL" << endl;
+        } else if (typeid(typ) == typeid(Tstudent)) {
+            cout << "1.ID  2.IMIE  3.NAZWISKO  4.PESEL  5.E-MAIL  6.KIERUNEK  7.GRUPY" << endl;
+        }
+        cout<<"Wpisz \"w\" aby wypisac wszystkie dane"<<endl;
+        cout << "KOMENDE NALEZY PODAC W FORMIE np. \"1,2,3\"" << endl;
+        string komenda;
+        cin >> komenda;
+        if(komenda[0]=='w')
+        {
+            WypiszBazeW(BazaDanych);
+            return;
+        }
+        for (int i = 0; i < komenda.size(); i = i + 2)
+            listaKomend.push_back((int) komenda[i] - 48);
+        for (int i = 0; i < listaKomend.size(); i++) {
+            if (listaKomend[i] < 0 or listaKomend[i] > 7)
+            {
+                cout<<"Zle podnay argumen: "<<i+1<<"\n Prowadz nowa komende"<<endl;
+                break;
+            }
+            if(i==listaKomend.size()-1)
+                poprawnaK=0;
+        }
+    }
+    int dlugoscTabeli=0;
+    for(int i = 0; i < listaKomend.size(); i++)
+    {
+        cout<<"|";
+        switch (listaKomend[i]) {
+            case 1:
+                cout<<" ID  ";
+                dlugoscTabeli+=6;
+                break;
+            case 2:
+                cout<<"    IMIE    ";
+                dlugoscTabeli+=13;
+                break;
+            case 3:
+                cout<<"     NAZWISKO    ";
+                dlugoscTabeli+=18;
+                break;
+            case 4:
+                cout<<"     PESEL     ";
+                dlugoscTabeli+=16;
+                break;
+            case 5:
+                if (typeid(typ) == typeid(Twykladowca)) {
+                    cout<<" TYTUL ";
+                    dlugoscTabeli+=8;
+                }else if (typeid(typ) == typeid(Tstudent)) {
+                    cout<<"                   E-MAIL                 ";
+                    dlugoscTabeli+=43;
+                }
+                break;
+            case 6:
+                if (typeid(typ) == typeid(Twykladowca)) {
+                    cout<<"                   E-MAIL                 ";
+                    dlugoscTabeli+=43;
+                }else if (typeid(typ) == typeid(Tstudent)) {
+                    cout<<"    KIERUNEK    ";
+                    dlugoscTabeli+=17;
+                }
+                break;
+            case 7:
+                if (typeid(typ) == typeid(Twykladowca)) {
+                    cout<<"     WYDZIAL";
+                    dlugoscTabeli+=17;
+                }else if (typeid(typ) == typeid(Tstudent)) {
+                    cout<<"     GRUPY     ";
+                    dlugoscTabeli+=17;
+                }
+        }
+    }
+    cout<<endl;
+    for(int i=0; i<dlugoscTabeli; i++)
+        cout<<"-";
+    cout<<endl;
+    for(int k=0; k<BazaDanych.size(); k++)
+    {
+        if(BazaDanych[k].PodajS('i')=="-1")
+            continue;
+        cout<<"|";
+        for(int i = 0; i < listaKomend.size(); i++)
+        {
+            switch (listaKomend[i]) {
+                case 1:
+                    cout<<setw(4)<<BazaDanych[k].PodajN('I');
+                    break;
+                case 2:
+                    cout<<setw(10)<<BazaDanych[k].PodajS('i');
+                    break;
+                case 3:
+                    cout<<setw(15)<<BazaDanych[k].PodajS('n');
+                    break;
+                case 4:
+                    cout<<setw(13)<<BazaDanych[k].PodajN('p');
+                    break;
+                case 5:
+                    if (typeid(typ) == typeid(Twykladowca)) {
+                        cout<<setw(5)<<BazaDanych[k].PodajS('t');
+                    }else if (typeid(typ) == typeid(Tstudent)) {
+                        cout<<setw(40)<<BazaDanych[k].PodajS('e');
+                    }
+                    break;
+                case 6:
+                    if (typeid(typ) == typeid(Twykladowca)) {
+                        cout<<setw(40)<<BazaDanych[k].PodajS('e');
+                    }else if (typeid(typ) == typeid(Tstudent)) {
+                        cout<<setw(14)<<BazaDanych[k].PodajS('k');
+                    }
+                    break;
+                case 7:
+                    if (typeid(typ) == typeid(Twykladowca)) {
+                        cout<<setw(14)<<BazaDanych[k].PodajS('w');
+                    }else if (typeid(typ) == typeid(Tstudent)) {
+                        cout<<"W"<<setw(2)<<BazaDanych[k].PodajN('w')<<" C"<<setw(2)<<BazaDanych[k].PodajN('c')<<" L"
+                                <<setw(2)<<BazaDanych[k].PodajN('l');
+                    }
+            }
+            if(i!=0 or i!=listaKomend.size()-1)
+            cout<<" | ";
+        }
+        cout<<endl;
+    }
+}
+
+template<typename typ>
+void WypiszBazeW(vector<typ> &BazaDanych)
+{
     if (typeid(typ) == typeid(Twykladowca)) {
-        cout<< "| ID  |    IMIE    |     NAZWISKO    |     PESEL     | TYTUL |                   E-MAIL                 |    KIERUNEK"<<endl;
+        cout<< "| ID  |    IMIE    |     NAZWISKO    |     PESEL     | TYTUL |                   E-MAIL                 |     WYDZIAL"<<endl;
         for(int i=0; i<120; i++)
             cout<<"-";
         cout<<endl;
-    }
-        else if (typeid(typ) == typeid(Tstudent)) {
+    } else if (typeid(typ) == typeid(Tstudent)) {
         cout<< "| ID  |    IMIE    |     NAZWISKO    |     PESEL     |                   E-MAIL                 |    KIERUNEK    |     GRUPY     "<< endl;
         for(int i=0; i<127; i++)
             cout<<"-";
         cout<<endl;
-        }
+    }
     for(int i=0; i < BazaDanych.size(); i++)
     {
         if((BazaDanych[i].PodajS('i'))=="-1")

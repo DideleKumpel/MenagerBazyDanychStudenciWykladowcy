@@ -101,6 +101,8 @@ string Tstudent::PodajS(char co) {
 
 long long int Tstudent::PodajN(char Co) {
     switch (Co) {
+        case 'I':
+            return Pid;
         case 'i':
             return id;
         case 'p':
