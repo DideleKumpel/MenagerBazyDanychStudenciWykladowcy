@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <limits>
+#include <iomanip>
 
 using namespace std;
 
@@ -30,9 +31,10 @@ void Tstudent::dodaj()
 }
 
 void Tstudent::wypisz() {
-    cout<<"ID "<<Pid;
+    cout<<"|"<<setw(4)<<Pid;
     Tosoba::wypisz();
-    cout<<" E-mial "<<email<<" Kierunek "<<kierunek<<" Grupy W"<<grupaW<<"C"<<grupaC<<"L"<<grupaL<<endl;
+    cout<<" | "<<setw(40)<<email<<" | "<<setw(14)<<kierunek<<" | W"<<setw(2)<<grupaW<<" C"<<setw(2)<<grupaC<<" L"
+    <<setw(2)<<grupaL<<endl;
 }
 
 void Tstudent::ZapiszWPliku(string nazwaPliku)

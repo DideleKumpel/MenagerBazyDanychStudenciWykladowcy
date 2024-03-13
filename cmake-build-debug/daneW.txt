@@ -10,5 +10,5 @@ Id 9 Imie Tomasz Nazwisko Dlugi Pesel 90020529768 Tytul dr E-mail dlugi14@o2.pl 
 Id 10 Imie Julia Nazwisko Waska Pesel 89102064497 Tytul dr E-mail JuliaWaska@o2.pl Wydzial automatyka
 Id 11 Imie Zbigniew Nazwisko Wisniewiski Pesel 985100239415 Tytul inz E-mail wisnia89@gmail.pl Wydzial automatyka
 Id 12 Imie Jan Nazwisko Walczuk Pesel 5292787527 Tytul hdr E-mail walczuk@gmail.pl Wydzial automatyka
-Id 13 Imie Agnieszka Nazwisko Wisniewska Pesel 89102789343 Tytul E-mail E-mail Wydzial Wydzial automatyka
+Id 13 Imie Agnieszka Nazwisko Wisniewska Pesel 89102789343 Tytul h.dr E-mail AgnieszkaWisniewska1967@gmail.com Wydzial automatyka
 Id 14 Imie Dawid Nazwisko Kon Pesel 74042127621 Tytul inz E-mail DawidK84@o2.pl Wydzial informatyka

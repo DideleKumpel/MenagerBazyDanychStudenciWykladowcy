@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ void Tosoba::wpisz() {
 }
 
 void Tosoba::wypisz() {
-    cout<<" Imie "<<imie<<" Nazwisko "<<nazwisko<<" Pesel "<<pesel;
+    cout<<" | "<<setw(10)<<imie<<" | "<<setw(15)<<nazwisko<<" | "<<setw(13)<<pesel;
 }
 
 Tosoba::Tosoba(std::string i, std::string n, int p) {

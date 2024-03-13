@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <limits>
+#include <iomanip>
 
 using namespace std;
 
@@ -35,9 +36,9 @@ void Twykladowca::wpisz(bool i) {
 }
 
 void Twykladowca::wypisz() {
-    cout<<"ID "<<Pid;
+    cout<<"|"<<setw(4)<<Pid;
     Tosoba::wypisz();
-    cout<<" Tytul "<<tytul<<" E-mail "<<email<<" "<<" Wydzial "<<wydzial<<endl;
+    cout<<" | "<<setw(5)<<tytul<<" | "<<setw(40)<<email<<" | "<<setw(14)<<wydzial<<endl;
 }
 
 void Twykladowca::ZapiszWPliku(std::string nazwaPliku) {

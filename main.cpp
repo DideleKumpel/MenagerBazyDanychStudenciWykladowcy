@@ -267,6 +267,18 @@ void ZapiszBaze(vector<typ> &BazaDanych, const  string NazwaPliku)
 template<typename typ>
 void WypiszBaze(vector<typ> &BazaDanych)
 {
+    if (typeid(typ) == typeid(Twykladowca)) {
+        cout<< "| ID  |    IMIE    |     NAZWISKO    |     PESEL     | TYTUL |                   E-MAIL                 |    KIERUNEK"<<endl;
+        for(int i=0; i<120; i++)
+            cout<<"-";
+        cout<<endl;
+    }
+        else if (typeid(typ) == typeid(Tstudent)) {
+        cout<< "| ID  |    IMIE    |     NAZWISKO    |     PESEL     |                   E-MAIL                 |    KIERUNEK    |     GRUPY     "<< endl;
+        for(int i=0; i<127; i++)
+            cout<<"-";
+        cout<<endl;
+        }
     for(int i=0; i < BazaDanych.size(); i++)
     {
         if((BazaDanych[i].PodajS('i'))=="-1")
