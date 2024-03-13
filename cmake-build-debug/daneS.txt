@@ -1,0 +1,14 @@
+Id 1 Imie Dawid Nazwisko Mackiewicz Pesel 12345678901 E-mial dawidmackiewicz@gmail.com Kierunek informatyka Grupy W 1 C 2 L 2
+Id 2 Imie Kamil Nazwisko Lepianka Pesel 98765432109 E-mial kamil.lepianka@o2.pl Kierunek informatyka Grupy W 1 C 2 L 1
+Id 3 Imie Katarzyna Nazwisko Wieliczko Pesel 94011091618 E-mial wieliczko@gmail.com Kierunek informatyka Grupy W 2 C 3 L 3
+Id 4 Imie Przemek Nazwisko Grobelny Pesel 57122037744 E-mial p.grobelny123@gmail.com Kierunek fizjoterapia Grupy W 1 C 1 L 1
+Id 5 Imie Jan Nazwisko Sobota Pesel 77122517154 E-mial jSobota@gmail.com Kierunek fizjoterapia Grupy W 1 C 1 L 2
+Id 6 Imie Dominik Nazwisko Wozny Pesel 72030339948 E-mial wozny74@o2.pl Kierunek informatyka Grupy W 1 C 1 L 2
+Id 7 Imie -1 Nazwisko -1 Pesel 0 E-mial -1 Kierunek -1 Grupy W -1 C -1 L -1
+Id 8 Imie Tomasz Nazwisko Kozel Pesel 58050887249 E-mial lovekebab@gmail.pl Kierunek automatyka Grupy W 1 C 3 L 5
+Id 9 Imie Krzysztof Nazwisko Lipa Pesel 3282741173 E-mial k2004Lipa@gmail.pl Kierunek automatyka Grupy W 2 C 3 L 1
+Id 10 Imie Andrzej Nazwisko Szafa Pesel 6222055978 E-mial szafaZamiata@gmail.com Kierunek automatyka Grupy W 1 C 3 L 2
+Id 11 Imie Przemek Nazwisko Lipa Pesel 67111839123 E-mial p2004Lipa@gmail.pl Kierunek fizjoterapia Grupy W 1 C 2 L 2
+Id 12 Imie Dominik Nazwisko Wieliczko Pesel 64040474566 E-mial TomaszW@gmail.pl Kierunek fizjoterapia Grupy W 1 C 2 L 1
+Id 13 Imie Katarzyna Nazwisko Sobota Pesel 96101963979 E-mial KSobota@02.pl Kierunek fizjoterapia Grupy W 1 C 2 L 3
+Id 14 Imie Amelia Nazwisko Data Pesel 60011297187 E-mial amela337@gmail.com Kierunek fizjoterapia Grupy W 1 C 2 L 3
