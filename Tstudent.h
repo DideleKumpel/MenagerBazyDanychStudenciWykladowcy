@@ -13,7 +13,8 @@ class Tstudent:Tosoba {
     std::string kierunek, email;
     int grupaW, grupaC, grupaL, Pid;
 public:
-    Tstudent(std::string i="-1", std::string n="-1", int p=0, std::string k="-1", std::string e="-1", int w=-1, int c=-1, int l=-1);
+    Tstudent(void){}
+    Tstudent(std::string i, std::string n, int p, std::string k, std::string e, int w, int c, int l);
     void dodaj();
     void wpisz(bool i=1);
     void wypisz();

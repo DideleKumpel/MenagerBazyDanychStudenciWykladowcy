@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <cstdlib>
 #include <iomanip>
 #include <limits>
 
@@ -31,6 +30,10 @@ void UsunWpis(vector<typ> &BazaDanych, const string NazwaPliku);
 template<typename typ>
 void Szukaj(vector<typ>BazaDanych);
 template<typename typ>
+void szukajString(vector<typ> &BazaDanych, char dana, string filtr, string wartosc);
+template<typename typ>
+void szukajInt(vector<typ> &BazaDanych, char dana, string filtr, string wartosc);
+template<typename typ>
 void Edytuj(vector<typ> &BazaDanych, const string NazwaPliku);
 template<typename typ>
 void Sortuj(vector<typ> BazaDanych);
@@ -38,7 +41,8 @@ template <typename typ>
 void SortujLiczby(vector<typ> &BazaDanych, char zmienna, bool kolejnosc);
 template <typename typ>
 void SortujString(vector<typ> &BazaDanych, char zmienna, bool kolejnosc);
-void OblsugaBleduCin();
+void ObslugaBleduCin();
+bool ObslugaBleduCinInt(int odpowiedz, int zakresP, int zakresK);
 
 struct BrakPliku{};
 struct BladCin{};
@@ -80,21 +84,8 @@ int main() {
             }
             cout << "3. Zamnkij program" << endl;
             cin >> menu1;
-            try {
-                OblsugaBleduCin();
-            }
-            catch (BladCin)
-            {
-                continue;
-            }
-            if(menu1<1 or menu1>3)
-            {
-                cout<<"Wprowadzono liczbe z poza zakres. Wprowadz ponownie"<<endl;
-                system("pause");
-                system("CLS");
-                continue;
-            }
-            break;
+            if(ObslugaBleduCinInt(menu1,1,2))
+                break;
         }
         ofstream dane;
         system("CLS");
@@ -107,6 +98,7 @@ int main() {
                 dane.close();
                 break;
             case 2:
+                int numer;
                 while(true) {
                     cout << "Wczytane bazy:" << endl;
                     for (int i = 0; i < NazwyBazDanych.size(); i++) {
@@ -117,25 +109,11 @@ int main() {
                             cout << endl;
                     }
                     cout << "Podaj numer bazy do wczytania" << endl;
-                    int numer;
                     cin >> numer;
-                    try {
-                        OblsugaBleduCin();
-                    }
-                    catch (BladCin)
-                    {
-                        continue;
-                    }
-                    if(numer<1 or numer>NazwyBazDanych.size())
-                    {
-                        cout<<"Wprowadzono liczbe z poza zakres. Wprowadz ponownie"<<endl;
-                        system("pause");
-                        system("CLS");
-                        continue;
-                    }
-                    nazwaBazy = NazwyBazDanych[numer - 1];
-                    break;
+                    if (ObslugaBleduCinInt(numer,1,NazwyBazDanych.size()))
+                        break;
                 }
+                nazwaBazy = NazwyBazDanych[numer - 1];
                 break;
             case 3:
                 return 0;
@@ -149,18 +127,7 @@ int main() {
                 cout << "1. Pracuj na spisie studnetow \n2. Pracuj na spisie wykladowcow \n3. Zamknij program" << endl
                      << endl;
                 cin >> odpowiedz;
-                try {
-                    OblsugaBleduCin();
-                }
-                catch (BladCin) {
-                    continue;
-                }
-                if (odpowiedz < 1 or odpowiedz > 3) {
-                    cout << "Wprowadzono liczbe z poza zakres. Wprowadz ponownie" << endl;
-                    system("pause");
-                    system("CLS");
-                    continue;
-                }
+                ObslugaBleduCinInt(odpowiedz,1, 3);
                 break;
             }
             system("CLS");
@@ -177,7 +144,6 @@ int main() {
             system("CLS");
         }
     }
-    return 0;
 }
 
 template<typename typ>
@@ -190,18 +156,8 @@ void menu2(vector<typ> &BazaDanych, const string NazwaPliku)
                "Szukaj danych\n6. Sortuj\n7. Wyczysc ekran\n8. Wroc do wyboru bazy danych"
                 << endl;
         cin >> odpowiedz;
-        try {
-            OblsugaBleduCin();
-        }
-        catch (BladCin) {
+        if (!ObslugaBleduCinInt(odpowiedz,1,8))
             continue;
-        }
-        if (odpowiedz < 1 or odpowiedz > 3) {
-            cout << "Wprowadzono liczbe z poza zakres. Wprowadz ponownie" << endl;
-            system("pause");
-            system("CLS");
-            continue;
-        }
         switch (odpowiedz) {
             case 1:
                 WypiszBaze(BazaDanych);
@@ -359,6 +315,9 @@ void WypiszBaze(vector<typ> &BazaDanych)
             if (listaKomend[i] < 0 or listaKomend[i] > 7)
             {
                 cout<<"Zle podnay argumen: "<<i+1<<"\n Prowadz nowa komende"<<endl;
+                system("pause");
+                listaKomend.clear();
+                system("CLS");
                 break;
             }
             if(i==listaKomend.size()-1)
@@ -546,130 +505,315 @@ void UsunWpis(vector<typ> &BazaDanych, const string NazwaPliku)
 }
 
 template<typename typ>
-void Szukaj(vector<typ>BazaDanych)
-{
-    string NazwaDanej;
-    while (true) {
+void Szukaj(vector<typ>BazaDanych) {
+    system("CLS");
+    string komenda;
+    vector<int> listaKomend;
+    bool poprawnaK = 1;
+    while (poprawnaK) {
         if (typeid(typ) == typeid(Twykladowca))
-            cout << "Nazwy danych: id, imie, nazwisko, pesel, tytul, e-mail, wydzial" << endl;
+            cout << "Indeks danych 1.ID 2.IMIE 3.NAZWISKO 4.PESEL 5.TYTUL 6.E-MAIL 7.WYDZIAL" << endl;
         if (typeid(typ) == typeid(Tstudent))
-            cout << "Nazwy danych: id, imie, nazwisko, pesel, e-mail, kierunek, grupaW, grupaC, grupaL" << endl;
-        cout << "Podaj nazwe szukanej danej-";
-        cin >> NazwaDanej;
-        cout << "Podaj szukana wartosc-";
-        if (NazwaDanej == "imie") {
-            string szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajS('i') == szukana)
-                    BazaDanych[i].wypisz();
+            cout << "Indeks danych: 1.ID 2.IMIE 3.NAZWISKO 4.PESEL 5.E-MAIL 6.KIERUNEK 7.GRUPA W 8.GRUPA C 9.GRUPA C"
+                 << endl;
+        cout << "KOMENDE NALEZY PODAC W FORMIE np. \"1,2,3\"" << endl;
+        string komnda;
+        cin >> komenda;
+        for (int i = 0; i < komenda.size(); i = i + 2)
+            listaKomend.push_back((int) komenda[i] - 48);
+        for (int i = 0; i < listaKomend.size(); i++) {
+            if (typeid(typ) == typeid(Twykladowca)) {
+                if (listaKomend[i] > 7 or listaKomend[i] < 1) {
+                    cout << "Wpisano liczbe z poza zakresu. Prowac dane ponownie" << endl;
+                    system("pause");
+                    system("CLS");
+                    listaKomend.clear();
+                    continue;
+                }
+            } else if (typeid(typ) == typeid(Tstudent)) {
+                if (listaKomend[i] > 9 or listaKomend[i] < 1) {
+                    cout << "Wpisano liczbe z poza zakresu. Prowac dane ponownie" << endl;
+                    system("pause");
+                    system("CLS");
+                    listaKomend.clear();
+                    continue;
+                }
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "nazwisko") {
-            string szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajS('n') == szukana)
-                    BazaDanych[i].wypisz();
+            if (i == listaKomend.size() - 1)
+                poprawnaK = 0;
+        }
+    }
+    poprawnaK = 1;
+    while (poprawnaK) {
+        for (int i = 0; i < listaKomend.size(); i++) {
+            string kryterium, filtr, wartosc;
+            while (true) {
+                system("CLS");
+                cout << "Wpisz \"h\" aby wyswietlic liste kryteriow." << endl;
+                if (typeid(typ) == typeid(Twykladowca)) {
+                    string zmiennaT[]{"ID", "IMIE", "NAZWISKO", "PESEL", "TYTYL", "E-MAIL", "WYDZIAL"};
+                    cout << "Podaj kryterium szukania dla " << zmiennaT[listaKomend[i] - 1] << endl;
+                }
+                if (typeid(typ) == typeid(Tstudent)) {
+                    string zmiennaT[]{"ID", "IMIE", "NAZWISKO", "PESEL", "E-MAIL", "KIERUNEK", "GRUPA W", "GRUPA C",
+                                      "GRUPA L"};
+                    cout << "Podaj kryterium szukania dla " << zmiennaT[listaKomend[i] - 1] << endl;
+                }
+                cin >> kryterium;
+                if (kryterium == "h") {
+                    int ktore = 0;
+                    while (true) {
+                        system("CLS");
+                        cout << "1. Komendy dla danych tekstowych." << endl;
+                        cout << "2. Komendy dla danych liczbowych." << endl;
+                        cout << "3. Wroc" << endl;
+                        cin >> ktore;
+                        if (!ObslugaBleduCinInt(ktore, 1, 3)) {
+                            continue;
+                        }
+                        switch (ktore) {
+                            case 1:
+                                system("CLS");
+                                cout
+                                        << "\"=\"-rowne \n\"!=\"-rozne \n\"tekst%\"-zaczyna sie od \"tekst\"\n\"%tekst\"-konczy sie na \"teskt\"\n\"%tekst%\"-zawiera w srodku \"tekst\""
+                                        << endl;
+                                system("pause");
+                                break;
+                            case 2:
+                                system("CLS");
+                                cout
+                                        << "\"=liczba\"-rowne \"liczba\"\n\"!=liczba\"-rozne od \"liczba\"\n\"<liczba\"-mniejsze od \"liczba\"\n\"<=liczba\"-mniejsze rowne od \"liczba\"\n\">liczba\"-wieksze od \"liczba\"\n\">=liczba\"-wieksze rowne od \"liczba\""
+                                        << endl;
+                                system("pause");
+                                break;
+                        }
+                        if (ktore == 3) {
+                            i -= 1;
+                            break;
+                        }
+                    }
+                } else if (typeid(typ) == typeid(Twykladowca)) {
+                    if (listaKomend[i] == 1 or listaKomend[i] == 4) {
+                        if (kryterium == "!=" or kryterium == "<=" or kryterium == ">=") {
+                            filtr.insert(0, kryterium, 0, 2);
+                            wartosc.insert(0, kryterium, 2);
+                        } else if (kryterium == "=" or kryterium == "<" or kryterium == ">"){
+                            filtr.insert(0, kryterium, 0, 1);
+                            wartosc.insert(0, kryterium, 1);
+                        } else{
+                            cout << "Zla forma komendy. Wpisz nowa komende" << endl;
+                            system("pause");
+                            continue;
+                        }
+                    }
+                    else if (listaKomend[i] == 2 or listaKomend[i] == 3 or listaKomend[i] == 5 or listaKomend[i] == 6 or
+                        listaKomend[i] == 7) {
+                        int miejsce1 = -1, miejsce2 = -1;
+                        if (kryterium[0] == '=') {
+                            filtr = "=";
+                            wartosc.insert(0, kryterium, 1);
+                        } else if (kryterium[0] == '!' and kryterium[1] == '=') {
+                            filtr = "!=";
+                            wartosc.insert(0, kryterium, 2);
+                        } else {
+                            miejsce1 = kryterium.find('%');
+                            miejsce2 = kryterium.find('%', kryterium.size() - 1);
+                            if (miejsce1 == 0 and miejsce2 == -1) {
+                                filtr = "k";
+                                wartosc.insert(0, kryterium, 1);
+                            } else if (miejsce2 == kryterium.size() - 1 and miejsce1 == kryterium.size() - 1) {
+                                filtr = "p";
+                                wartosc.insert(0, kryterium);
+                                wartosc.resize(wartosc.size() - 1);
+                            } else if (miejsce1 == 0 and miejsce2 == kryterium.size() - 1) {
+                                filtr = "s";
+                                wartosc.insert(0, kryterium, 1);
+                                wartosc.resize(wartosc.size() - 1);
+                            } else {
+                                cout << "Zla forma komendy. Wpisz nowa komende" << endl;
+                                system("pause");
+                                continue;
+                            }
+                        }
+                    }
+                } else if (typeid(typ) == typeid(Tstudent)) {
+                    if (listaKomend[i] == 1 or listaKomend[i] == 4 or listaKomend[i] == 7 or listaKomend[i] == 8 or
+                        listaKomend[i] == 9) {
+                        if (kryterium == "!=" or kryterium == "<=" or kryterium == ">=") {
+                            filtr.insert(0, kryterium, 0, 2);
+                            wartosc.insert(0, kryterium, 2);
+                        } else if (kryterium == "=" or kryterium == "<" or kryterium == ">"){
+                            filtr.insert(0, kryterium, 0, 1);
+                            wartosc.insert(0, kryterium, 1);
+                        } else{
+                            cout << "Zla forma komendy. Wpisz nowa komende" << endl;
+                            system("pause");
+                            continue;
+                        }
+                    }
+                    else if (listaKomend[i] == 2 or listaKomend[i] == 3 or listaKomend[i] == 5 or listaKomend[i] == 6) {
+                        int miejsce1 = -1, miejsce2 = -1;
+                        if (kryterium[0] == '=') {
+                            filtr = "=";
+                            wartosc.insert(0, kryterium, 1);
+                        } else if (kryterium[0] == '!' and kryterium[1] == '=') {
+                            filtr = "!=";
+                            wartosc.insert(0, kryterium, 2);
+                        } else {
+                            miejsce1 = kryterium.find('%');
+                            miejsce2 = kryterium.find('%', kryterium.size() - 1);
+                            if (miejsce1 == 0 and miejsce2 == -1) {
+                                filtr = "k";
+                                wartosc.insert(0, kryterium, 1);
+                            } else if (miejsce2 == kryterium.size() - 1 and miejsce1 == kryterium.size() - 1) {
+                                filtr = "p";
+                                wartosc.insert(0, kryterium);
+                                wartosc.resize(wartosc.size() - 1);
+                            } else if (miejsce1 == 0 and miejsce2 == kryterium.size() - 1) {
+                                filtr = "s";
+                                wartosc.insert(0, kryterium, 1);
+                                wartosc.resize(wartosc.size() - 1);
+                            } else {
+                                cout << "Zla forma komendy. Wpisz nowa komende" << endl;
+                                system("pause");
+                                continue;
+                            }
+                        }
+                    }
+                }
+                break;
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "tytul") {
-            string szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajS('t') == szukana)
-                    BazaDanych[i].wypisz();
+            if (typeid(typ) == typeid(Twykladowca)) {
+                switch (listaKomend[i]) {
+                    case 1:
+                        szukajInt(BazaDanych, 'I', filtr, wartosc);
+                        break;
+                    case 2:
+                        szukajString(BazaDanych, 'i', filtr, wartosc);
+                        break;
+                    case 3:
+                        szukajString(BazaDanych, 'n', filtr, wartosc);
+                        break;
+                    case 4:
+                        szukajInt(BazaDanych, 'p', filtr, wartosc);
+                        break;
+                    case 5:
+                        szukajString(BazaDanych, 't', filtr, wartosc);
+                        break;
+                    case 6:
+                        szukajString(BazaDanych, 'e', filtr, wartosc);
+                        break;
+                    case 7:
+                        szukajString(BazaDanych, 'w', filtr, wartosc);
+                        break;
+                }
+            } else if (typeid(typ) == typeid(Tstudent)) {
+                switch (listaKomend[i]) {
+                    case 1:
+                        szukajInt(BazaDanych, 'I', filtr, wartosc);
+                        break;
+                    case 2:
+                        szukajString(BazaDanych, 'i', filtr, wartosc);
+                        break;
+                    case 3:
+                        szukajString(BazaDanych, 'n', filtr, wartosc);
+                        break;
+                    case 4:
+                        szukajInt(BazaDanych, 'p', filtr, wartosc);
+                        break;
+                    case 5:
+                        szukajString(BazaDanych, 'e', filtr, wartosc);
+                        break;
+                    case 6:
+                        szukajString(BazaDanych, 'k', filtr, wartosc);
+                        break;
+                    case 7:
+                        szukajInt(BazaDanych, 'w', filtr, wartosc);
+                        break;
+                    case 8:
+                        szukajInt(BazaDanych, 'c', filtr, wartosc);
+                        break;
+                    case 9:
+                        szukajInt(BazaDanych, 'l', filtr, wartosc);
+                        break;
+                }
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "e-mail") {
-            string szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajS('i') == szukana)
-                    BazaDanych[i].wypisz();
+            wartosc.clear();
+            filtr.clear();
+        }
+        break;
+    }
+    WypiszBaze(BazaDanych);
+    system("pause");
+    }
+
+    template<typename typ>
+    void szukajString(vector<typ> &BazaDanych, char dana, string filtr, string wartosc)
+    {
+        if(filtr=="="){
+            for(int i=0; i<BazaDanych.size(); i++) {
+                if (BazaDanych[i].PodajS(dana) != wartosc)
+                    BazaDanych[i].Usun();
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "wydzial") {
-            string szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajS('i') == szukana)
-                    BazaDanych[i].wypisz();
+        } else if(filtr=="!="){
+            for(int i=0; i<BazaDanych.size(); i++) {
+                if (BazaDanych[i].PodajS(dana) == wartosc)
+                    BazaDanych[i].Usun();
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "kierunek") {
-            string szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajS('k') == szukana)
-                    BazaDanych[i].wypisz();
+        } else if(filtr=="p"){
+            for(int i=0; i<BazaDanych.size(); i++) {
+                int gdzie=BazaDanych[i].PodajS(dana).find(wartosc);
+                    if(gdzie!=0)
+                    BazaDanych[i].Usun();
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "pesel") {
-            long long int szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajN('p') == szukana)
-                    BazaDanych[i].wypisz();
+        } else if(filtr=="s"){
+            for(int i=0; i<BazaDanych.size(); i++) {
+                int gdzie=BazaDanych[i].PodajS(dana).find(wartosc,1);
+                if(gdzie==-1 or gdzie==0 or gdzie+wartosc.size()==BazaDanych[i].PodajS(dana).size())
+                    BazaDanych[i].Usun();
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "grupaW") {
-            long long int szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajN('w') == szukana)
-                    BazaDanych[i].wypisz();
+        } else if(filtr=="k"){
+            for(int i=0; i<BazaDanych.size(); i++) {
+                int gdzie=BazaDanych[i].PodajS(dana).find(wartosc,1);
+                if(gdzie==-1 or gdzie==0 or gdzie+wartosc.size()!=BazaDanych[i].PodajS(dana).size())
+                    BazaDanych[i].Usun();
             }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "grupaC") {
-            long long int szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajN('c') == szukana)
-                    BazaDanych[i].wypisz();
-            }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "grupaL") {
-            long long int szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajN('l') == szukana)
-                    BazaDanych[i].wypisz();
-            }
-            system("pause");
-            return;
-        } else if (NazwaDanej == "id") {
-            long long int szukana;
-            cin >> szukana;
-            cout << endl;
-            for (int i = 0; i < BazaDanych.size(); i++) {
-                if (BazaDanych[i].PodajN('i') == szukana)
-                    BazaDanych[i].wypisz();
-            }
-            system("pause");
-            return;
-        } else {
-            cout << "Zle podana dana" << endl;
-            system("pause");
+        }
+    }
+
+template<typename typ>
+void szukajInt(vector<typ> &BazaDanych, char dana, string filtr, string wartosc)
+{
+    long long int wartoscInt= stoll(wartosc);
+    if(filtr=="="){
+        for(int i=0; i<BazaDanych.size(); i++) {
+            if(BazaDanych[i].PodajN(dana)!=wartoscInt)
+                BazaDanych[i].Usun();
+        }
+    } else if(filtr=="!="){
+        for(int i=0; i<BazaDanych.size(); i++) {
+            if(BazaDanych[i].PodajN(dana)==wartoscInt)
+                BazaDanych[i].Usun();
+        }
+    } else if(filtr==">"){
+        for(int i=0; i<BazaDanych.size(); i++) {
+            if(BazaDanych[i].PodajN(dana)<=wartoscInt)
+                BazaDanych[i].Usun();
+        }
+    } else if(filtr==">="){
+        for(int i=0; i<BazaDanych.size(); i++) {
+            if(BazaDanych[i].PodajN(dana)<wartoscInt)
+                BazaDanych[i].Usun();
+        }
+    } else  if(filtr=="<"){
+        for(int i=0; i<BazaDanych.size(); i++) {
+            if(BazaDanych[i].PodajN(dana)>=wartoscInt)
+                BazaDanych[i].Usun();
+        }
+    } else  if(filtr=="<="){
+        for(int i=0; i<BazaDanych.size(); i++) {
+            if(BazaDanych[i].PodajN(dana)>wartoscInt)
+                BazaDanych[i].Usun();
         }
     }
 }
@@ -717,13 +861,13 @@ void Sortuj(vector<typ> BazaDanych) {
     while (true){
         while (true) {
             if (typeid(typ) == typeid(Twykladowca))
-                cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.TYTUL 5.WYDZIAL" << endl;
+                cout << "Indeks danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.TYTUL 5.WYDZIAL" << endl;
             else if (typeid(typ) == typeid(Tstudent))
-                cout << "Nazwy danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.KIERUNEK 5.GRUPA W 6.GRUPA C 7.GRUPA L" << endl;
+                cout << "Indeks danych: 1.IMIE 2.NAZWISKO 3.PESEL 4.KIERUNEK 5.GRUPA W 6.GRUPA C 7.GRUPA L" << endl;
             cout << "Podaj liczbe odpowiadjaca numerowi danej wedlug ktorej ma odbyc sie sortowanie" << endl;
             cin >> NazwaDanej;
             try {
-                OblsugaBleduCin();
+                ObslugaBleduCin();
             }
             catch (BladCin)
             {
@@ -913,7 +1057,7 @@ void SortujString(vector<typ> &BazaDanych, char zmienna, bool kolejnosc)
     }
 }
 
-void OblsugaBleduCin()
+void ObslugaBleduCin()
 {
     if(cin.fail())
     {
@@ -926,4 +1070,21 @@ void OblsugaBleduCin()
         BladCin flaga;
         throw flaga;
     }
+}
+
+bool ObslugaBleduCinInt(int odpowiedz, int zakresP, int zakresK)
+{
+        try {
+            ObslugaBleduCin();
+        }
+        catch (BladCin) {
+            return 0;
+        }
+        if (odpowiedz < zakresP or odpowiedz > zakresK) {
+            cout << "Wprowadzono liczbe z poza zakres. Wprowadz ponownie" << endl;
+            system("pause");
+            system("CLS");
+            return 0;
+        }
+    return 1;
 }

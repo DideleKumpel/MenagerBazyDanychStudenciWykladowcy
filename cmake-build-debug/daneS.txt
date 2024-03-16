@@ -12,3 +12,4 @@ Id 11 Imie Andrzej Nazwisko Kowalko Pesel 312321 E-mial asdsad Kierunek lol Grup
 Id 12 Imie Dominik Nazwisko Wieliczko Pesel 64040474566 E-mial TomaszW@gmail.pl Kierunek fizjoterapia Grupy W 1 C 2 L 1
 Id 13 Imie Katarzyna Nazwisko Sobota Pesel 96101963979 E-mial KSobota@02.pl Kierunek fizjoterapia Grupy W 1 C 2 L 3
 Id 14 Imie Amelia Nazwisko Data Pesel 60011297187 E-mial amela337@gmail.com Kierunek fizjoterapia Grupy W 1 C 2 L 3
+Id 15 Imie Krystian Nazwisko Perchun Pesel 16437654789 E-mial perchunek@gmail.com Kierunek automatyka Grupy W 1 C 3 L 2

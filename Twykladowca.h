@@ -12,7 +12,8 @@ class Twykladowca:Tosoba {
     std::string tytul, email, wydzial;
     int Pid;
 public:
-    Twykladowca(std::string i="-1", std::string n="-1", int p=-1, std::string t="-1", std::string e="-1", std::string w="-1");
+    Twykladowca(void) {}
+    Twykladowca(std::string i, std::string n, int p, std::string t, std::string e, std::string w);
     void dodaj();
     void wpisz(bool i=1);
     void wypisz();
