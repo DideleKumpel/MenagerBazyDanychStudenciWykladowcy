@@ -12,10 +12,11 @@
 using namespace std;
 
 template<typename typ>
-void menu2(vector<typ> &BazaDanych, const string NazwaPliku);
+void menu2(vector<typ> &BazaDanych, string NazwaPliku);
+void UsunBaze(string nazwaBazy, vector<string> NazwyBazDanych);
 void WczytajNazwyBaz(vector<string> &nazwyBaz);
 string NowaBaza(vector<string> &nazwyBaz);
-void WczytajBaze(vector<Tstudent> &BazaDanych, const string NazwaPliku);
+void WczytajBaze(vector<Tstudent> &BazaDanych, string NazwaPliku);
 void WczytajBaze(vector<Twykladowca> &BazaDanych, string NazwaPliku);
 template<typename typ>
 void ZapiszBaze(vector<typ> &BazaDanych, string NazwaPliku);
@@ -24,17 +25,17 @@ void WypiszBaze(vector<typ> &BazaDanych);
 template<typename typ>
 void WypiszBazeW(vector<typ> &BazaDanych);
 template<typename typ>
-void DodajWpis(vector<typ> &BazaDanych,const string NazwaPliku);
+void DodajWpis(vector<typ> &BazaDanych,string NazwaPliku);
 template<typename typ>
-void UsunWpis(vector<typ> &BazaDanych, const string NazwaPliku);
+void UsunWpis(vector<typ> &BazaDanych, string NazwaPliku);
 template<typename typ>
 void Szukaj(vector<typ>BazaDanych);
 template<typename typ>
-void szukajString(vector<typ> &BazaDanych, char dana, string filtr, string wartosc);
+void szukajString(vector<typ> &BazaDanych, char dana, const string &filtr,const string &wartosc);
 template<typename typ>
-void szukajInt(vector<typ> &BazaDanych, char dana, string filtr, string wartosc);
+void szukajInt(vector<typ> &BazaDanych, char dana, const string &filtr,const string &wartosc);
 template<typename typ>
-void Edytuj(vector<typ> &BazaDanych, const string NazwaPliku);
+void Edytuj(vector<typ> &BazaDanych, string NazwaPliku);
 template<typename typ>
 void Sortuj(vector<typ> BazaDanych);
 template <typename typ>
@@ -51,7 +52,7 @@ int main() {
     vector<string> NazwyBazDanych;
     vector<Tstudent> studenci;
     vector<Twykladowca> wykladowcy;
-    bool CzyWczytany=1;
+    bool CzyWczytany= true;
     string nazwaBazy;
     try {
         WczytajNazwyBaz(NazwyBazDanych);
@@ -66,7 +67,7 @@ int main() {
         }
     } catch (BrakPliku)
     {
-        CzyWczytany=0;
+        CzyWczytany= false;
         char decyzja='n';
         cout<<"Nie znalozniono spisu istniejacych bazdanych. Czy chcesz kontynulowac? (t-Tak, n-Nie)"<<endl;
         cin>>decyzja;
@@ -124,10 +125,10 @@ int main() {
         while (true) {
             int odpowiedz;
             while(true) {
-                cout << "1. Pracuj na spisie studnetow \n2. Pracuj na spisie wykladowcow \n3. Zamknij program" << endl
+                cout << "1. Pracuj na spisie studnetow \n2. Pracuj na spisie wykladowcow\n3. Usun baze danych \n4. Zamknij program" << endl
                      << endl;
                 cin >> odpowiedz;
-                ObslugaBleduCinInt(odpowiedz,1, 3);
+                ObslugaBleduCinInt(odpowiedz,1, 4);
                 break;
             }
             system("CLS");
@@ -139,6 +140,9 @@ int main() {
                     menu2(wykladowcy, nazwaBazy);
                     break;
                 case 3:
+                    UsunBaze(nazwaBazy, NazwyBazDanych);
+                    break;
+                case 4:
                     return 0;
             }
             system("CLS");
@@ -187,6 +191,38 @@ void menu2(vector<typ> &BazaDanych, const string NazwaPliku)
     }
 }
 
+void UsunBaze(string nazwaBazy, vector<string> NazwyBazDanych)
+{
+    vector<string> NowaListaBaz;
+    char odpowiedz='n';
+    cout<<"Czy napewno chcesz usunać baze danych o nazwie "<<nazwaBazy<<"\nt-Tak n-Nie"<<endl;
+    cin>>odpowiedz;
+    if(odpowiedz=='t')
+    {
+        string PlikW=nazwaBazy+"W.txt";
+        string PlikS=nazwaBazy+"S.txt";
+        remove(PlikW.c_str());
+        remove(PlikS.c_str());
+        for(int i=0; i<NazwyBazDanych.size(); i++)
+        {
+            if(NazwyBazDanych[i]!=nazwaBazy)
+                NowaListaBaz.push_back(NazwyBazDanych[i]);
+        }
+        ofstream plik;
+        plik.open("IstniejaceBazy.txt", ofstream::out | ofstream::trunc);
+        if (!plik) {
+            cout << "plik nie znaleziony" << endl;
+        } else {
+            for(int i=0; i<NazwyBazDanych.size(); i++)
+            plik<<NowaListaBaz[i]<<" ";
+        }
+        plik.close();
+        cout<<"Baza "<<nazwaBazy<<" zostala usunieta"<<endl;
+        system("pause");
+        exit(0);
+    }
+}
+
 string NowaBaza(vector<string> &nazwyBaz)
 {
     string nazwa;
@@ -195,18 +231,18 @@ string NowaBaza(vector<string> &nazwyBaz)
     if (!dane) {
     cout << "plik nie znaleziony" << endl;
     } else {
-        bool poprawnaNazwa=1;
+        bool poprawnaNazwa= true;
         cout<<"Podaj nazwe nowej bazy:"<<endl;
         while (poprawnaNazwa) {
             cin >> nazwa;
             for (int i = 0; i < nazwyBaz.size(); i++) {
                 if (nazwyBaz[i] == nazwa) {
                     cout << "Istnieje juz baza danych o tej nazwie. Wpisz inna nazwe." << endl;
-                    poprawnaNazwa=1;
+                    poprawnaNazwa= true;
                     break;
                 }
                 if(i==(nazwyBaz.size()-1))
-                    poprawnaNazwa=0;
+                    poprawnaNazwa= false;
             }
     }
         dane<<" "<<nazwa;
@@ -251,7 +287,6 @@ void WczytajBaze(vector<Tstudent> &BazaDanych, const string NazwaPliku)
         }
         catch (Tstudent::KoniecPliku)
         {
-            //BazaDanych.push_back(pomocnicza);
             break;
         }
     }
@@ -291,7 +326,7 @@ void ZapiszBaze(vector<typ> &BazaDanych, const  string NazwaPliku)
 template<typename typ>
 void WypiszBaze(vector<typ> &BazaDanych)
 {
-    bool poprawnaK=1;
+    bool poprawnaK= true;
     vector<int> listaKomend;
     while(poprawnaK) {
         cout << "Ktore dane wypisac: " << endl;
@@ -321,7 +356,7 @@ void WypiszBaze(vector<typ> &BazaDanych)
                 break;
             }
             if(i==listaKomend.size()-1)
-                poprawnaK=0;
+                poprawnaK= false;
         }
     }
     int dlugoscTabeli=0;
@@ -452,7 +487,7 @@ template<typename typ>
 void DodajWpis(vector<typ> &BazaDanych, const string NazwaPliku)
 {
     char petla='t';
-    while(petla='t') {
+    while(petla=='t') {
         typ pomocnicza;
         pomocnicza.wpisz();
         pomocnicza.wypisz();
@@ -509,7 +544,7 @@ void Szukaj(vector<typ>BazaDanych) {
     system("CLS");
     string komenda;
     vector<int> listaKomend;
-    bool poprawnaK = 1;
+    bool poprawnaK = true;
     while (poprawnaK) {
         if (typeid(typ) == typeid(Twykladowca))
             cout << "Indeks danych 1.ID 2.IMIE 3.NAZWISKO 4.PESEL 5.TYTUL 6.E-MAIL 7.WYDZIAL" << endl;
@@ -540,10 +575,10 @@ void Szukaj(vector<typ>BazaDanych) {
                 }
             }
             if (i == listaKomend.size() - 1)
-                poprawnaK = 0;
+                poprawnaK = false;
         }
     }
-    poprawnaK = 1;
+    poprawnaK = true;
     while (poprawnaK) {
         for (int i = 0; i < listaKomend.size(); i++) {
             string kryterium, filtr, wartosc;
@@ -608,7 +643,7 @@ void Szukaj(vector<typ>BazaDanych) {
                     }
                     else if (listaKomend[i] == 2 or listaKomend[i] == 3 or listaKomend[i] == 5 or listaKomend[i] == 6 or
                         listaKomend[i] == 7) {
-                        int miejsce1 = -1, miejsce2 = -1;
+                        long long int miejsce1 = -1, miejsce2 = -1;
                         if (kryterium[0] == '=') {
                             filtr = "=";
                             wartosc.insert(0, kryterium, 1);
@@ -748,7 +783,7 @@ void Szukaj(vector<typ>BazaDanych) {
     }
 
     template<typename typ>
-    void szukajString(vector<typ> &BazaDanych, char dana, string filtr, string wartosc)
+    void szukajString(vector<typ> &BazaDanych, char dana, const string &filtr,const string &wartosc)
     {
         if(filtr=="="){
             for(int i=0; i<BazaDanych.size(); i++) {
@@ -782,7 +817,7 @@ void Szukaj(vector<typ>BazaDanych) {
     }
 
 template<typename typ>
-void szukajInt(vector<typ> &BazaDanych, char dana, string filtr, string wartosc)
+void szukajInt(vector<typ> &BazaDanych, char dana, const string &filtr,const string &wartosc)
 {
     long long int wartoscInt= stoll(wartosc);
     if(filtr=="="){
@@ -916,9 +951,9 @@ void Sortuj(vector<typ> BazaDanych) {
         }
     bool koljenosc;
     if(sposob==1)
-        koljenosc=1;
+        koljenosc= true;
     else
-        koljenosc=0;
+        koljenosc= false;
     cout << "Posortowane: " << endl;
         switch (NazwaDanej) {
             case 1:
@@ -1007,7 +1042,7 @@ void SortujString(vector<typ> &BazaDanych, char zmienna, bool kolejnosc)
 {
     typ pomocnaT;
     string pomocnicza1, pomocnicza2;
-    int dlugosc1=0, dlugosc2=0;
+    int dlugosc1, dlugosc2;
     if(kolejnosc) {
         for (int i = 0; i < BazaDanych.size(); i++) {
             for (int j = i; j < BazaDanych.size(); j++) {
@@ -1078,13 +1113,13 @@ bool ObslugaBleduCinInt(int odpowiedz, int zakresP, int zakresK)
             ObslugaBleduCin();
         }
         catch (BladCin) {
-            return 0;
+            return false;
         }
         if (odpowiedz < zakresP or odpowiedz > zakresK) {
             cout << "Wprowadzono liczbe z poza zakres. Wprowadz ponownie" << endl;
             system("pause");
             system("CLS");
-            return 0;
+            return false;
         }
-    return 1;
+    return true;
 }
