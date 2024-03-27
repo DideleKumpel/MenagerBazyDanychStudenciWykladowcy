@@ -7,8 +7,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 add_executable(bazadanych main.cpp
         Tosoba.cpp
-        Tosoba.h
         Tstudent.cpp
-        Tstudent.h
         Twykladowca.cpp
-        Twykladowca.h)
+        OblusgaBleduCin.cpp
+        BazaDanychFunkcje.cpp)

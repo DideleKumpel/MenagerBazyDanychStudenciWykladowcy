@@ -4,9 +4,12 @@
 
 #include "Tosoba.h"
 
+#include "ObslugaBleduCin.h"
+
 #include <iostream>
 #include <string>
 #include <iomanip>
+
 
 using namespace std;
 
@@ -14,7 +17,12 @@ using namespace std;
 void Tosoba::wpisz() {
     cout<<"Wpisz imie-"; cin>>imie;
     cout<<"Wpisz nazwisko-"; cin>>nazwisko;
-    cout<<"Podaj pesel-"; cin>>pesel;
+    while (true) {
+        cout << "Podaj pesel-";
+        cin >> pesel;
+        if (OBD::ObslugaBleduCinInt(pesel,9999999999,99999999999))
+            break;
+    }
 }
 
 void Tosoba::wypisz() {

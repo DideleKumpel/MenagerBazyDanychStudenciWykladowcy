@@ -12,3 +12,4 @@ Id 11 Imie Zbigniew Nazwisko Wisniewiski Pesel 985100239415 Tytul inz E-mail wis
 Id 12 Imie Jan Nazwisko Walczuk Pesel 5292787527 Tytul hdr E-mail walczuk@gmail.pl Wydzial automatyka
 Id 13 Imie Agnieszka Nazwisko Wisniewska Pesel 89102789343 Tytul h.dr E-mail AgnieszkaWisniewska1967@gmail.com Wydzial automatyka
 Id 14 Imie Dawid Nazwisko Kon Pesel 74042127621 Tytul inz E-mail DawidK84@o2.pl Wydzial informatyka
+Id 15 Imie Jula Nazwisko HOlinger Pesel 12345678901 Tytul inz E-mail JH@o2.pl Wydzial informatyka

@@ -3,6 +3,7 @@
 //
 
 #include "Tstudent.h"
+#include "ObslugaBleduCin.h"
 
 #include <iostream>
 #include <fstream>
@@ -18,9 +19,24 @@ void Tstudent::wpisz(bool i) {
     Tosoba::wpisz();
     cout<<"Wpisz e-mail-"; cin>>email;
     cout<<"Wpisz kierunek-"; cin>>kierunek;
-    cout<<"Podaj grupe wykladowa-"; cin>>grupaW;
-    cout<<"Podaj grupe cwiczeniowa-"; cin>>grupaC;
-    cout<<"Podaj grupe laboratoryjna-"; cin>>grupaL;
+    while(true) {
+        cout << "Podaj grupe wykladowa-";
+        cin >> grupaW;
+        if (OBD::ObslugaBleduCinInt(grupaW,1,999))
+            break;
+    }
+    while (true) {
+        cout << "Podaj grupe cwiczeniowa-";
+        cin >> grupaC;
+        if (OBD::ObslugaBleduCinInt(grupaC,1,999))
+            break;
+    }
+    while (true) {
+        cout << "Podaj grupe laboratoryjna-";
+        cin >> grupaL;
+        if (OBD::ObslugaBleduCinInt(grupaL,1,999))
+            break;
+    }
     if(i)
     Pid=id+1;
 }

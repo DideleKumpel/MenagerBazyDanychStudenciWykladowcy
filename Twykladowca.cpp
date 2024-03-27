@@ -38,7 +38,7 @@ void Twykladowca::wpisz(bool i) {
 void Twykladowca::wypisz() {
     cout<<"|"<<setw(4)<<Pid;
     Tosoba::wypisz();
-    cout<<" | "<<setw(5)<<tytul<<" | "<<setw(40)<<email<<" | "<<setw(14)<<wydzial<<endl;
+    cout<<" | "<<setw(6)<<tytul<<" | "<<setw(40)<<email<<" | "<<setw(14)<<wydzial<<endl;
 }
 
 void Twykladowca::ZapiszWPliku(std::string nazwaPliku) {
