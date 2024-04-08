@@ -12,7 +12,6 @@
 
 using namespace std;
 
-struct BrakPliku{};
 
 template<typename typ>
 void menu2(vector<typ> &BazaDanych, string NazwaPliku);
@@ -34,7 +33,7 @@ int main() {
             if(i==NazwyBazDanych.size()-1)
                 cout<<endl;
         }
-    } catch (BrakPliku)
+    } catch (BDF::BrakPliku)
     {
         CzyWczytany= false;
         char decyzja='n';

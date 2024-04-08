@@ -59,6 +59,8 @@ string BDF::NowaBaza(vector<string> &nazwyBaz)
         cout<<"Podaj nazwe nowej bazy:"<<endl;
         while (poprawnaNazwa) {
             cin >> nazwa;
+            if(nazwyBaz.size()==0)
+                break;
             for (int i = 0; i < nazwyBaz.size(); i++) {
                 if (nazwyBaz[i] == nazwa) {
                     cout << "Istnieje juz baza danych o tej nazwie. Wpisz inna nazwe." << endl;
